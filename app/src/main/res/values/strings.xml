@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Lawn Tracker</string>
+    <string name="action_settings">Settings</string>
+    <string name="hint_word">Word...</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">Mow not created.</string>
+    <string name="delete_all_mows">All mows deleted.</string>
+</resources>
