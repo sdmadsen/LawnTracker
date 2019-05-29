@@ -1,10 +1,7 @@
 package com.sdmadsen.steve.lawntracker
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 
 @Dao
 interface MowDao {
@@ -22,5 +19,8 @@ interface MowDao {
     fun deleteAll()
 
     @Update
-    fun updateMows(vararg mow: Mow)
+    fun updateMow(vararg mow: Mow)
+
+    @Delete
+    fun deleteMow(vararg mow: Mow)
 }

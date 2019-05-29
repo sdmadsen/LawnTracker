@@ -10,29 +10,36 @@ import kotlinx.coroutines.runBlocking
 
 class MowViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: MowRepository
+    private val mowRepository: MowRepository
+    private val timeLogRepository: TimeLogRepository
     val allWords: LiveData<List<Mow>>
 
     init {
-        val mowsDao = MowRoomDatabase.getDatabase(application, viewModelScope).mowDao()
-        repository = MowRepository(mowsDao)
-        allWords = repository.allMows
+        val mowDao = MowRoomDatabase.getDatabase(application, viewModelScope).mowDao()
+        mowRepository = MowRepository(mowDao)
+        val timeLogDao = MowRoomDatabase.getDatabase(application, viewModelScope).timeLogDao()
+        timeLogRepository = TimeLogRepository(timeLogDao)
+        allWords = mowRepository.allMows
     }
 
-    fun insert(mow: Mow) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insert(mow)
+    fun insertMow(mow: Mow) = viewModelScope.launch(Dispatchers.IO) {
+        mowRepository.insert(mow)
     }
-
-    fun updateMows(mow: Mow) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updateMows(mow)
+    fun updateMow(mow: Mow) = viewModelScope.launch(Dispatchers.IO) {
+        mowRepository.updateMow(mow)
     }
-
-    fun deleteAll() = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteAll()
+    fun deleteMow(mow: Mow) = viewModelScope.launch(Dispatchers.IO) {
+        mowRepository.deleteMow(mow)
     }
-
+    fun deleteAllMows() = viewModelScope.launch(Dispatchers.IO) {
+        mowRepository.deleteAll()
+    }
     fun oneMow(refId: String) = runBlocking {
-        repository.oneMow(refId)
+        mowRepository.oneMow(refId)
     }
 
+
+    fun insertTimeLog(timeLog: TimeLog) = viewModelScope.launch(Dispatchers.IO) {
+        timeLogRepository.insert(timeLog)
+    }
 }

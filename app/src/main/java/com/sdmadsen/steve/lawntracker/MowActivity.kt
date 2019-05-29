@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -15,7 +17,7 @@ import java.util.*
 class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private var refId: String = ""
     private var mow: Mow = Mow(
-        UUID.randomUUID().toString(), Direction.HORIZONTAL, null, Status.PENDING, java.sql.Time(
+        UUID.randomUUID().toString(), Direction.HORIZONTAL, null, Status.STARTED, java.sql.Time(
             Calendar.getInstance().getTime().getTime()))
 
     companion object {
@@ -62,8 +64,105 @@ class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
             mowTrimmed.isChecked = mow.trimmed ?: false
 
+        }.invokeOnCompletion {
+            updateStatus(mow.status)
         }
 
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("Delete Mow")
+
+            builder.setMessage("Are you sure you want to delete this mow?")
+
+            builder.setPositiveButton("Delete"){_,_ ->
+                mowViewModel.deleteMow(mow)
+                Toast.makeText(
+                    applicationContext,
+                    R.string.delete_mow,
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+
+            builder.setNeutralButton("Cancel"){_,_ -> }
+
+            val dialog: AlertDialog = builder.create()
+
+            dialog.show()
+        }
+
+
+    }
+
+    private fun updateMowStatus(status: Status){
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle(status.text + " Mow")
+
+        builder.setMessage("Are you sure you want to " + status.text + " this mow?")
+
+        val mowViewModel: MowViewModel = ViewModelProviders.of(this).get(MowViewModel::class.java)
+
+        builder.setPositiveButton(status.text){_,_ ->
+            (GlobalScope as CoroutineScope).launch {
+                mowViewModel.updateMow(
+                    Mow(
+                        mow.refId,
+                        mow.direction,
+                        mow.trimmed,
+                        Status.processStatus(status),
+                        mow.date_created
+                    )
+                )
+                mowViewModel.insertTimeLog(
+                    TimeLog(
+                        UUID.randomUUID().toString(),
+                        mow.refId,
+                        status,
+                        java.sql.Time(Calendar.getInstance().time.time)
+                    )
+                )
+            }
+            updateStatus(Status.processStatus(status))
+        }
+
+        builder.setNeutralButton("Cancel"){_,_ -> }
+
+        val dialog: AlertDialog = builder.create()
+
+        dialog.show()
+    }
+
+    private fun updateStatus(status: Status){
+        val mowStatus: Spinner = findViewById(R.id.status)
+        mowStatus.setSelection(status.ordinal)
+
+        val fab2 = findViewById<FloatingActionButton>(R.id.fab2)
+        val fab3 = findViewById<FloatingActionButton>(R.id.fab3)
+
+        if (status == Status.PENDING || status == Status.PAUSED) {
+            fab2.setImageResource(android.R.drawable.ic_media_play)
+            fab2.setOnClickListener {
+                updateMowStatus(Status.START)
+            }
+
+            fab3.hide()
+        } else if (status == Status.STARTED) {
+            fab2.setImageResource(android.R.drawable.ic_media_pause)
+            fab2.setOnClickListener {
+                updateMowStatus(Status.PAUSE)
+            }
+
+            fab3.show()
+            fab3.setOnClickListener {
+                updateMowStatus(Status.STOP)
+            }
+        } else {
+            fab2.hide()
+            fab3.hide()
+        }
     }
 
     private fun onCheckChange(){
@@ -72,13 +171,15 @@ class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         (GlobalScope as CoroutineScope).launch {
             val mowTrimmed: CheckBox = findViewById(R.id.trimmed)
 
-            mowViewModel.updateMows(
+            mowViewModel.updateMow(
                 Mow(
                     mow.refId,
                     mow.direction,
                     mowTrimmed.isChecked,
                     mow.status,
-                    mow.date_created))
+                    mow.date_created)).invokeOnCompletion {
+                mow = mowViewModel.oneMow(refId)
+            }
         }
     }
 
@@ -92,13 +193,17 @@ class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             val mowStatus: Spinner = findViewById(R.id.status)
             val mowDirection: Spinner = findViewById(R.id.direction)
 
-            mowViewModel.updateMows(
+            mowViewModel.updateMow(
                 Mow(
                     mow.refId,
                     Direction.getDirectionByText(mowDirection.selectedItem.toString()),
                     mow.trimmed,
                     Status.getStatusByText(mowStatus.selectedItem.toString()),
-                    mow.date_created))
+                    mow.date_created)).invokeOnCompletion {
+                mow = mowViewModel.oneMow(refId)
+            }
+
+
         }
     }
 

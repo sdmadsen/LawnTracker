@@ -13,8 +13,13 @@ class MowRepository(private val mowDao: MowDao) {
     }
 
     @WorkerThread
-    fun updateMows(mow: Mow) {
-        mowDao.updateMows(mow)
+    fun updateMow(mow: Mow) {
+        mowDao.updateMow(mow)
+    }
+
+    @WorkerThread
+    fun deleteMow(mow: Mow) {
+        mowDao.deleteMow(mow)
     }
 
     @WorkerThread

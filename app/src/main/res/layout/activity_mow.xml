@@ -13,24 +13,49 @@
             android:layout_height="wrap_content"
             android:id="@+id/title" android:layout_marginTop="16dp" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp" tools:text="title"/>
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp" tools:text="title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
     <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/status" android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
+            app:layout_constraintTop_toBottomOf="@+id/title" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
     <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/direction" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/status"/>
+            app:layout_constraintTop_toBottomOf="@+id/status"
+            android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"/>
     <CheckBox
             android:text="@string/trimmed_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/trimmed" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/direction"/>
+            app:layout_constraintTop_toBottomOf="@+id/direction" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" app:srcCompat="@android:drawable/ic_menu_delete"
+            android:id="@+id/fab" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="8dp"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" app:srcCompat="@android:drawable/ic_media_play"
+            android:id="@+id/fab2" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" app:srcCompat="@android:drawable/checkbox_on_background"
+            android:id="@+id/fab3" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/fab2" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

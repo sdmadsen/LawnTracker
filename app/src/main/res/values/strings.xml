@@ -5,5 +5,7 @@
     <string name="button_save">Save</string>
     <string name="empty_not_saved">Mow not created.</string>
     <string name="delete_all_mows">All mows deleted.</string>
+    <string name="delete_mow">Mow deleted.</string>
     <string name="trimmed_text">Trimmed</string>
+    <string name="start_mow">Mow Started</string>
 </resources>

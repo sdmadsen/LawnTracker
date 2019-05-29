@@ -1,9 +1,8 @@
 package com.sdmadsen.steve.lawntracker
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val newMowActivityRequestCode = 1
     private lateinit var mowViewModel: MowViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,36 +42,40 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
-            val intent = Intent(this@MainActivity, NewMowActivity::class.java)
-            startActivityForResult(intent, newMowActivityRequestCode)
+            val refId = UUID.randomUUID().toString()
+            val mow = Mow(refId, Direction.HORIZONTAL, null, Status.PENDING, java.sql.Time(Calendar.getInstance().time.time))
+            mowViewModel.insertMow(mow).invokeOnCompletion {
+                val mowIntent = MowActivity.newIntent(this)
+                mowIntent.putExtra("refId", refId)
+                startActivity(mowIntent)
+            }
+
         }
 
         val fab2 = findViewById<FloatingActionButton>(R.id.fab2)
         fab2.setOnClickListener {
-            mowViewModel.deleteAll()
-            Toast.makeText(
-                applicationContext,
-                R.string.delete_all_mows,
-                Toast.LENGTH_LONG
-            ).show()
-        }
 
-    }
+            val builder = AlertDialog.Builder(this)
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, intentData)
+            builder.setTitle("Delete All Mows")
 
-        if (requestCode == newMowActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            intentData?.let { data ->
-                val mow = Mow(UUID.randomUUID().toString(), Direction.getDirectionByText(data.getStringExtra(NewMowActivity.EXTRA_REPLY)), null, Status.PENDING, java.sql.Time(Calendar.getInstance().getTime().getTime()))
-                mowViewModel.insert(mow)
+            builder.setMessage("Are you sure you want to delete all mows?")
+
+            builder.setPositiveButton("Delete"){_,_ ->
+                mowViewModel.deleteAllMows()
+                Toast.makeText(
+                    applicationContext,
+                    R.string.delete_all_mows,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } else {
-            Toast.makeText(
-                applicationContext,
-                R.string.empty_not_saved,
-                Toast.LENGTH_LONG
-            ).show()
+
+            builder.setNeutralButton("Cancel"){_,_ -> }
+
+            val dialog: AlertDialog = builder.create()
+
+            dialog.show()
         }
+
     }
 }

@@ -11,11 +11,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-@Database(entities = arrayOf(Mow::class), version = 1)
+@Database(entities = arrayOf(Mow::class, TimeLog::class), version = 1)
 @TypeConverters(Converters::class)
 public abstract class MowRoomDatabase : RoomDatabase() {
 
     abstract fun mowDao(): MowDao
+    abstract fun timeLogDao(): TimeLogDao
 
     companion object {
         @Volatile
@@ -53,15 +54,6 @@ public abstract class MowRoomDatabase : RoomDatabase() {
                     }
                 }
             }
-        }
-
-        suspend fun populateDatabase(mowDao: MowDao) {
-            mowDao.deleteAll()
-
-            //var mow = Mow("Hello", java.sql.Time(Calendar.getInstance().getTime().getTime()), Direction.HORIZONTAL)
-            //mowDao.insert(mow)
-            //mow = Mow("World!", java.sql.Time(Calendar.getInstance().getTime().getTime()), Direction.VERTICAL)
-            //mowDao.insert(mow)
         }
     }
 }
