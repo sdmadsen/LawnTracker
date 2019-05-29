@@ -10,6 +10,8 @@ enum class Status(val text: String) {
 
     companion object {
         fun getStatusByText(text: String) = values().first { it.text == text }
+
+        fun getMowStatusValues() = values().sliceArray(0..3)
     }
 
     override fun toString(): String {

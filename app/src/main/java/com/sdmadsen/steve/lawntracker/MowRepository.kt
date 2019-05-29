@@ -13,12 +13,17 @@ class MowRepository(private val mowDao: MowDao) {
     }
 
     @WorkerThread
-    suspend fun deleteAll() {
+    fun updateMows(mow: Mow) {
+        mowDao.updateMows(mow)
+    }
+
+    @WorkerThread
+    fun deleteAll() {
         mowDao.deleteAll()
     }
 
     @WorkerThread
-    suspend fun oneMow(refId: String): Mow {
+    fun oneMow(refId: String): Mow {
         return mowDao.getOneMow(refId)
     }
 }

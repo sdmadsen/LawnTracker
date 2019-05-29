@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface MowDao {
@@ -19,4 +20,7 @@ interface MowDao {
 
     @Query("DELETE FROM mow_table")
     fun deleteAll()
+
+    @Update
+    fun updateMows(vararg mow: Mow)
 }

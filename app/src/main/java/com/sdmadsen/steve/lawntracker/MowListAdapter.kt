@@ -27,7 +27,7 @@ class MowListAdapter internal constructor(
 
     override fun onBindViewHolder(holder: MowViewHolder, position: Int) {
         val current = mows[position]
-        holder.mowItemView.text = android.text.format.DateFormat.format("yyyy-MM-dd hh:mm:ss a", current.date_created).toString() + " : " + current.status.text
+        holder.mowItemView.text = android.text.format.DateFormat.format("yyyy-MM-dd hh:mm:ss a", current.date_created).toString() + " : " + current.direction.text
         holder.mowItemView.setOnClickListener(View.OnClickListener {
             val mowIntent = MowActivity.newIntent(context)
             mowIntent.putExtra("refId", current.refId)

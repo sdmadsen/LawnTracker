@@ -23,6 +23,10 @@ class MowViewModel(application: Application) : AndroidViewModel(application) {
         repository.insert(mow)
     }
 
+    fun updateMows(mow: Mow) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateMows(mow)
+    }
+
     fun deleteAll() = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteAll()
     }
