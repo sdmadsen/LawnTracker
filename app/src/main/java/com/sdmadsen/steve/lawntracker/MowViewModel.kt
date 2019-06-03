@@ -42,4 +42,7 @@ class MowViewModel(application: Application) : AndroidViewModel(application) {
     fun insertTimeLog(timeLog: TimeLog) = viewModelScope.launch(Dispatchers.IO) {
         timeLogRepository.insert(timeLog)
     }
+    fun timeElapsed(refId: String) = runBlocking {
+        timeLogRepository.timeElapsed(refId)
+    }
 }

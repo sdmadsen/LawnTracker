@@ -24,4 +24,9 @@ class TimeLogRepository(private val timeLogDao: TimeLogDao) {
     fun oneTimeLog(refId: String): TimeLog {
         return timeLogDao.getOneTimeLog(refId)
     }
+
+    @WorkerThread
+    fun timeElapsed(refId: String): Int {
+        return timeLogDao.getTimeElapsed(refId)
+    }
 }

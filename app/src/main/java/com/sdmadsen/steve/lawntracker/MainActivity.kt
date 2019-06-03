@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
             val refId = UUID.randomUUID().toString()
-            val mow = Mow(refId, Direction.HORIZONTAL, null, Status.PENDING, java.sql.Time(Calendar.getInstance().time.time))
+            val mow = Mow(refId, Direction.HORIZONTAL, null, Status.PENDING, Calendar.getInstance())
             mowViewModel.insertMow(mow).invokeOnCompletion {
                 val mowIntent = MowActivity.newIntent(this)
                 mowIntent.putExtra("refId", refId)

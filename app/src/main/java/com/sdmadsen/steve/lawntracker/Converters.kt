@@ -2,17 +2,18 @@ package com.sdmadsen.steve.lawntracker
 
 import androidx.room.TypeConverter
 import java.sql.Time
+import java.util.*
 
 class Converters {
     @TypeConverter
-    fun fromTimestamp(value: Long?): Time? {
-        return value?.let { Time(it) }
+    fun fromTimestamp(value: Long?): Calendar? = value?.let { time ->
+        GregorianCalendar().also { calendar ->
+            calendar.timeInMillis = time
+        }
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: Time?): Long? {
-        return date?.time?.toLong()
-    }
+    fun dateToTimestamp(timestamp: Calendar?): Long? = timestamp?.timeInMillis
 
     @TypeConverter
     fun directionFromString(value: String?): Direction? {

@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.sql.Time
+import java.util.*
 
 @Entity(tableName = "time_log_table",
     foreignKeys = arrayOf(ForeignKey(entity = Mow::class,
@@ -16,7 +16,7 @@ class TimeLog(
     @ColumnInfo (name = "refId") val refId: String,
     @ColumnInfo (name = "mowId") val mowId: String,
     @ColumnInfo (name = "status") val status: Status,
-    @ColumnInfo (name = "date_created") val date_created: Time
+    @ColumnInfo (name = "date_created") val date_created: Calendar
 
 
 )

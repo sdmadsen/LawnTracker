@@ -2,6 +2,7 @@ package com.sdmadsen.steve.lawntracker
 
 import android.content.Context
 import android.content.Intent
+import android.icu.util.UniversalTimeScale.toLong
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -13,12 +14,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private var refId: String = ""
     private var mow: Mow = Mow(
-        UUID.randomUUID().toString(), Direction.HORIZONTAL, null, Status.STARTED, java.sql.Time(
-            Calendar.getInstance().getTime().getTime()))
+        UUID.randomUUID().toString(), Direction.HORIZONTAL, null, Status.STARTED, Calendar.getInstance())
 
     companion object {
 
@@ -47,9 +48,7 @@ class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
 
         val mowTrimmed: CheckBox = findViewById(R.id.trimmed)
-        mowTrimmed.setOnClickListener(View.OnClickListener {
-            onCheckChange()
-        })
+        mowTrimmed.setOnClickListener { onCheckChange() }
 
         (GlobalScope as CoroutineScope).launch {
             mow = mowViewModel.oneMow(refId)
@@ -63,6 +62,19 @@ class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             mowDirection.setSelection(mow.direction.ordinal)
 
             mowTrimmed.isChecked = mow.trimmed ?: false
+
+
+            val timeElapsed: TextView = findViewById(R.id.timeElapsed)
+            val timeElapsed_milli: Long = mowViewModel.timeElapsed(refId).toLong()
+            val timeElapsed_string = String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(timeElapsed_milli),
+                TimeUnit.MILLISECONDS.toMinutes(timeElapsed_milli) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeElapsed_milli)), // The change is in this line
+                TimeUnit.MILLISECONDS.toSeconds(timeElapsed_milli) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeElapsed_milli)))
+
+            timeElapsed.text = timeElapsed_string
+
 
         }.invokeOnCompletion {
             updateStatus(mow.status)
@@ -121,7 +133,7 @@ class MowActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         UUID.randomUUID().toString(),
                         mow.refId,
                         status,
-                        java.sql.Time(Calendar.getInstance().time.time)
+                        Calendar.getInstance()
                     )
                 )
             }

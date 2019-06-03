@@ -18,7 +18,7 @@ interface TimeLogDao {
     @Delete
     fun deleteTimeLog(vararg timeLog: TimeLog)
 
-    @Query("SELECT * from time_log_table WHERE mowId = :mowId")
+    @Query("SELECT SUM(CASE WHEN status <> 'Start' THEN date_created ELSE 0 END) - SUM(CASE WHEN status = 'Start' THEN date_created ELSE 0 END) from time_log_table WHERE mowId = :mowId GROUP BY mowId")
     fun getTimeElapsed(mowId: String): Int
 
 }
